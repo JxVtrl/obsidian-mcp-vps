@@ -1,0 +1,40 @@
+# Obsidian vault as a remote MCP server, behind OAuth.
+#
+#   cloudflared -> mcp-auth-proxy (:8083) -> server-filesystem (stdio)
+#
+# mcp-auth-proxy converts stdio to streamable HTTP at /mcp by itself and owns
+# the child process, so there is no separate stdio->HTTP gateway to babysit.
+# See docs/troubleshooting.md for why that matters.
+#
+# The vault is mounted at the SAME path inside and outside the container so
+# the paths an MCP client sees match the paths on the host.
+services:
+  vault-mcp:
+    build: https://github.com/sigbit/mcp-auth-proxy.git
+    restart: always
+    command:
+      - "--"
+      - "npx"
+      - "-y"
+      - "@modelcontextprotocol/server-filesystem"
+      - "${VAULT_DIR:-/opt/vault}"
+    environment:
+      - EXTERNAL_URL=${EXTERNAL_URL:?set EXTERNAL_URL in .env}
+      - PASSWORD=${PASSWORD:?set PASSWORD in .env}
+      - PROXY_BEARER_TOKEN=${PROXY_BEARER_TOKEN:?set PROXY_BEARER_TOKEN in .env}
+      - DATA_PATH=/data
+      - LISTEN=:8083
+      # TLS is terminated by Cloudflare; the proxy only listens on localhost.
+      - NO_AUTO_TLS=true
+    ports:
+      # Loopback only. Never publish this on 0.0.0.0.
+      - "127.0.0.1:8083:8083"
+    volumes:
+      - auth_data:/data
+      - ${VAULT_DIR:-/opt/vault}:${VAULT_DIR:-/opt/vault}
+      # npm cache: without it npx re-downloads the server on every recreate.
+      - npm_cache:/root/.npm
+
+volumes:
+  auth_data:
+  npm_cache:

@@ -1,0 +1,32 @@
+[Unit]
+Description=Vault HTTP writer
+After=network.target
+
+[Service]
+# Secrets live in a root-only file, never in this unit:
+#   WRITE_TOKEN=...   (see install.sh)
+EnvironmentFile=/etc/vault-writer.env
+Environment=PORT=8082
+Environment=HOST=127.0.0.1
+Environment=VAULT_DIR=/opt/vault
+ExecStart=/usr/bin/node /opt/obsidian-mcp-vps/vault-writer/server.js
+Restart=always
+RestartSec=5
+
+# Runs as root so file ownership matches the MCP container and the sync cron,
+# but confined: the whole filesystem is read-only except the vault.
+ProtectSystem=strict
+ReadWritePaths=/opt/vault
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+NoNewPrivileges=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+RestrictAddressFamilies=AF_INET AF_INET6
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,21 @@
+# Example for a LOCALLY managed tunnel (cloudflared tunnel create ...).
+#
+# If your tunnel runs with `--token` (created in the Zero Trust dashboard),
+# this file is NOT the source of truth: add the hostnames under
+# Networks -> Tunnels -> Public Hostname instead, and pass the protocol as a
+# flag:  cloudflared tunnel --protocol http2 run --token <token>
+
+tunnel: <TUNNEL-UUID>
+credentials-file: /etc/cloudflared/<TUNNEL-UUID>.json
+
+# QUIC is the default and was flaky on a budget VPS (see troubleshooting).
+protocol: http2
+
+ingress:
+  # MCP endpoint (OAuth proxy)
+  - hostname: mcp.example.com
+    service: http://localhost:8083
+  # Optional: HTTP writer for automations
+  - hostname: vault.example.com
+    service: http://localhost:8082
+  - service: http_status:404
