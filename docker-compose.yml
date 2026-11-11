@@ -21,7 +21,6 @@ services:
     environment:
       - EXTERNAL_URL=${EXTERNAL_URL:?set EXTERNAL_URL in .env}
       - PASSWORD=${PASSWORD:?set PASSWORD in .env}
-      - PROXY_BEARER_TOKEN=${PROXY_BEARER_TOKEN:?set PROXY_BEARER_TOKEN in .env}
       - DATA_PATH=/data
       - LISTEN=:8083
       # TLS is terminated by Cloudflare; the proxy only listens on localhost.

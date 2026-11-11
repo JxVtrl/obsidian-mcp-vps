@@ -32,6 +32,20 @@ Check the transport. Claude's custom connectors expect **streamable HTTP**.
 A server exposed as SSE answers `curl` fine and still fails in the client.
 With this repo the endpoint is always `https://<host>/mcp`.
 
+## `npm WARN EBADENGINE` in the container logs
+
+The mcp-auth-proxy image ships Node 18, and recent releases of
+`@modelcontextprotocol/server-filesystem` declare Node 20+. As of November
+2026 the server still starts and works with these warnings. If a future
+release stops running on Node 18, pin the last working version in
+`docker-compose.yml` (`@modelcontextprotocol/server-filesystem@<version>`).
+
+## A static bearer token returns 401
+
+Expected. `PROXY_BEARER_TOKEN` in mcp-auth-proxy is the token the proxy adds
+when calling an HTTP *backend*; it does not authenticate incoming clients.
+Clients authenticate through the OAuth flow with `PASSWORD`.
+
 ## Tunnel drops with QUIC errors
 
 **Symptom.** `cloudflared` logs fill with QUIC timeouts, the hostname flaps

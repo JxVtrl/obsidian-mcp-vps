@@ -46,7 +46,6 @@ if [ ! -f "$DEST/.env" ]; then
 EXTERNAL_URL=$EXTERNAL_URL
 VAULT_DIR=$VAULT_DIR
 PASSWORD=$(openssl rand -base64 32)
-PROXY_BEARER_TOKEN=$(openssl rand -base64 48)
 EOF
   echo "    wrote $DEST/.env (mode 600). The PASSWORD in it is your login."
 else

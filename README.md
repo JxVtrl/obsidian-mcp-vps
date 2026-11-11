@@ -110,7 +110,9 @@ The endpoint is `https://mcp.example.com/mcp`.
 - **Claude**: Settings → Connectors → Add custom connector, paste the URL.
   A browser window asks for the `PASSWORD` from `.env`, once.
 - **Claude Code**: `claude mcp add --transport http vault https://mcp.example.com/mcp`
-- **Anything without OAuth**: send `Authorization: Bearer <PROXY_BEARER_TOKEN>`.
+- **Other clients**: anything that supports OAuth for remote MCP servers
+  works the same way. There is no static-token access; a request without a
+  valid OAuth token gets a 401.
 
 Ask it to list your vault. That's it.
 
