@@ -6,20 +6,9 @@ Claude (web, desktop, mobile, Claude Code), ChatGPT, Cursor and any other MCP
 client can read and write your notes from anywhere, even when your computer is
 off. No ports opened, OAuth in front, vault kept in sync with git.
 
-```
- your devices                        VPS
-┌──────────────┐   git    ┌─────────────────────────────────────────┐
-│ Obsidian     │◄────────►│ /opt/vault  ◄── vault-sync.sh (cron 2m) │
-└──────────────┘  remote  │      ▲                 ▲                │
-                          │      │ stdio           │ fs             │
-┌──────────────┐          │ server-filesystem   vault-writer :8082  │
-│ MCP client   │  HTTPS   │      ▲                 ▲                │
-│ (Claude, …)  │─────────►│ mcp-auth-proxy :8083   │                │
-└──────────────┘          │      ▲                 │                │
-┌──────────────┐  HTTPS   │      └── cloudflared ──┘                │
-│ n8n / scripts│─────────►│          (outbound tunnel only)         │
-└──────────────┘          └─────────────────────────────────────────┘
-```
+<p align="center">
+  <img src="docs/architecture.png" alt="Architecture: MCP clients and automations reach the VPS through a Cloudflare Tunnel; an OAuth proxy and the filesystem MCP server read and write the vault, which syncs with a private git remote" width="640">
+</p>
 
 ## Why this exists
 
