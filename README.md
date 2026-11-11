@@ -86,6 +86,10 @@ VAULT_REPO=git@github.com:you/your-vault.git \
 ./install.sh
 ```
 
+> The compose stack and the sync script are what runs in production.
+> `install.sh` is newer and has seen less testing: read it before running, and
+> please open an issue if a step fails on your distro.
+
 It clones the vault to `/opt/vault`, generates secrets into
 `/opt/obsidian-mcp-vps/.env` (mode 600), starts the containers, installs the
 sync cron and, unless `WITH_WRITER=0`, the writer service.
